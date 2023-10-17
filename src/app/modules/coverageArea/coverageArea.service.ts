@@ -11,7 +11,15 @@ export const addCoverageArea = async (
 };
 
 export const getAllCoverageAreas = async (): Promise<CoverageArea[]> => {
-  const result = await prisma.coverageArea.findMany({});
+  const result = await prisma.coverageArea.findMany({
+    include: {
+      upazillaOrThana: {
+        include: {
+          district: true,
+        },
+      },
+    },
+  });
   return result;
 };
 
@@ -20,6 +28,13 @@ export const getCoverageArea = async (
 ): Promise<CoverageArea | null> => {
   const result = await prisma.coverageArea.findFirst({
     where: { id },
+    include: {
+      upazillaOrThana: {
+        include: {
+          district: true,
+        },
+      },
+    },
   });
   return result;
 };
@@ -33,6 +48,13 @@ export const updateCoverageArea = async (
       id,
     },
     data: payload,
+    include: {
+      upazillaOrThana: {
+        include: {
+          district: true,
+        },
+      },
+    },
   });
   return result;
 };

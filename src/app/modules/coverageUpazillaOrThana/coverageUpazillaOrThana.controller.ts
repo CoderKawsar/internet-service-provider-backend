@@ -27,7 +27,7 @@ const getAllCoverageUpazillaOrThanas = catchAsync(
     sendResponse<CoverageUpazillaOrThana[]>(res, {
       success: true,
       statusCode: httpStatus.OK,
-      message: "All coverage district/thanas fetched successfully!",
+      message: "All coverage upazilla/thanas fetched successfully!",
       data: result,
     });
   }
@@ -43,7 +43,23 @@ const getCoverageUpazillaOrThana = catchAsync(
     sendResponse<CoverageUpazillaOrThana>(res, {
       success: true,
       statusCode: httpStatus.OK,
-      message: "Coverage district/thana fetched successfully!",
+      message: "Coverage upazilla/thana fetched successfully!",
+      data: result,
+    });
+  }
+);
+
+const getUpazillaOrThanasByDistrictId = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const result =
+      await CoverageUpazillaOrThanaService.getUpazillaOrThanasByDistrictId(
+        req.params.districtId
+      );
+
+    sendResponse<CoverageUpazillaOrThana[]>(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "This district's coverage upazilla/thanas fetched successfully!",
       data: result,
     });
   }
@@ -60,7 +76,7 @@ const updateCoverageUpazillaOrThana = catchAsync(
     sendResponse<CoverageUpazillaOrThana>(res, {
       success: true,
       statusCode: httpStatus.OK,
-      message: "Coverage district/thana updated successfully!",
+      message: "Coverage upazilla/thana updated successfully!",
       data: result,
     });
   }
@@ -76,7 +92,7 @@ const deleteCoverageUpazillaOrThana = catchAsync(
     sendResponse<CoverageUpazillaOrThana>(res, {
       success: true,
       statusCode: httpStatus.OK,
-      message: "Coverage district/thana deleted successfully!",
+      message: "Coverage upazilla/thana deleted successfully!",
       data: result,
     });
   }
@@ -86,6 +102,7 @@ export const CoverageUpazillaOrThanaController = {
   addCoverageUpazillaOrThana,
   getAllCoverageUpazillaOrThanas,
   getCoverageUpazillaOrThana,
+  getUpazillaOrThanasByDistrictId,
   updateCoverageUpazillaOrThana,
   deleteCoverageUpazillaOrThana,
 };

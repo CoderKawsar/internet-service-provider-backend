@@ -11,7 +11,7 @@ router.post(
   "/",
   authRole(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
   validateRequest(
-    CoverageUpazillaOrThanaValidation.AddOrUpdateCoverageUpazillaOrThanaZodSchema
+    CoverageUpazillaOrThanaValidation.AddCoverageUpazillaOrThanaZodSchema
   ),
   CoverageUpazillaOrThanaController.addCoverageUpazillaOrThana
 );
@@ -19,6 +19,11 @@ router.post(
 router.get(
   "/",
   CoverageUpazillaOrThanaController.getAllCoverageUpazillaOrThanas
+);
+
+router.get(
+  "/district/:districtId",
+  CoverageUpazillaOrThanaController.getUpazillaOrThanasByDistrictId
 );
 
 router.get(
@@ -30,7 +35,7 @@ router.patch(
   "/:id",
   authRole(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
   validateRequest(
-    CoverageUpazillaOrThanaValidation.AddOrUpdateCoverageUpazillaOrThanaZodSchema
+    CoverageUpazillaOrThanaValidation.UpdateCoverageUpazillaOrThanaZodSchema
   ),
   CoverageUpazillaOrThanaController.updateCoverageUpazillaOrThana
 );

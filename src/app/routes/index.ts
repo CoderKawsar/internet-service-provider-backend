@@ -16,7 +16,7 @@ const moduleRoutes = [
     route: CoverageUpazillaOrThanaRoutes,
   },
   {
-    path: "/coverage-area",
+    path: "/coverage-areas",
     route: CoverageAreaRoutes,
   },
   {

@@ -11,26 +11,29 @@ datasource db {
 }
 
 model CoverageDistrict {
-  id           String         @id @default(uuid())
-  district     String         @unique
-  CoverageArea CoverageArea[]
+  id       String @id @default(uuid())
+  district String @unique
+
+  CoverageUpazillaOrThana CoverageUpazillaOrThana[]
 
   @@map("coverage_districts")
 }
 
 model CoverageUpazillaOrThana {
-  id              String         @id @default(uuid())
-  upazillaOrThana String         @unique
-  CoverageArea    CoverageArea[]
+  id String @id @default(uuid())
+
+  upazillaOrThana String @unique
+
+  districtId String
+  district   CoverageDistrict @relation(fields: [districtId], references: [id])
+
+  CoverageArea CoverageArea[]
 
   @@map("coverage_upazilla_or_thanas")
 }
 
 model CoverageArea {
   id String @id @default(uuid())
-
-  districtId String
-  district   CoverageDistrict @relation(fields: [districtId], references: [id])
 
   upazillaOrThanaId String
   upazillaOrThana   CoverageUpazillaOrThana @relation(fields: [upazillaOrThanaId], references: [id])

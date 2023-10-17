@@ -6,6 +6,9 @@ export const addCoverageUpazillaOrThana = async (
 ): Promise<CoverageUpazillaOrThana> => {
   const result = await prisma.coverageUpazillaOrThana.create({
     data: payload,
+    include: {
+      district: true,
+    },
   });
   return result;
 };
@@ -13,7 +16,9 @@ export const addCoverageUpazillaOrThana = async (
 export const getAllCoverageUpazillaOrThanas = async (): Promise<
   CoverageUpazillaOrThana[]
 > => {
-  const result = await prisma.coverageUpazillaOrThana.findMany({});
+  const result = await prisma.coverageUpazillaOrThana.findMany({
+    include: { district: true },
+  });
   return result;
 };
 
@@ -22,6 +27,15 @@ export const getCoverageUpazillaOrThana = async (
 ): Promise<CoverageUpazillaOrThana | null> => {
   const result = await prisma.coverageUpazillaOrThana.findFirst({
     where: { id },
+  });
+  return result;
+};
+
+export const getUpazillaOrThanasByDistrictId = async (
+  districtId: string
+): Promise<CoverageUpazillaOrThana[] | null> => {
+  const result = await prisma.coverageUpazillaOrThana.findMany({
+    where: { districtId: districtId },
   });
   return result;
 };
@@ -54,6 +68,7 @@ export const CoverageUpazillaOrThanaService = {
   addCoverageUpazillaOrThana,
   getAllCoverageUpazillaOrThanas,
   getCoverageUpazillaOrThana,
+  getUpazillaOrThanasByDistrictId,
   updateCoverageUpazillaOrThana,
   deleteCoverageUpazillaOrThana,
 };
