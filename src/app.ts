@@ -4,11 +4,17 @@ import cookieParser from "cookie-parser";
 import httpStatus from "http-status";
 import globalErrorHandler from "./app/middlewares/globalErrorHandler";
 import routes from "./app/routes";
+import config from "./config";
 
 const app: Application = express();
 
 // cors middlewire
-app.use(cors());
+app.use(
+  cors({
+    origin: config.frontend_url,
+    credentials: true,
+  })
+);
 app.use(cookieParser());
 
 // parser middlewires

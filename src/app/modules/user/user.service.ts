@@ -3,11 +3,15 @@ import prisma from "../../../shared/prisma";
 import config from "../../../config";
 import bcrypt from "bcrypt";
 import { Secret } from "jsonwebtoken";
-import { ILoginInfo, IRefreshTokenResponse } from "./user.interfaces";
+import { ILoginInfo, IRefreshTokenResponse } from "./user.interface";
 import ApiError from "../../../errors/ApiError";
 import httpStatus from "http-status";
 import { jwtHelpers } from "../../../helpers/jwtHelpers";
+import { selectedFields } from "./user.constant";
 
+// ======================================================================================
+// Register User
+// =================================================================================== //
 const registerUser = async (
   userData: User
 ): Promise<Omit<User, "password">> => {
@@ -32,6 +36,9 @@ const registerUser = async (
   return dataWithoutPassword;
 };
 
+// ======================================================================================
+// Login User
+// =================================================================================== //
 const login = async (loginInfo: ILoginInfo) => {
   const { email, password } = loginInfo;
 
@@ -52,7 +59,7 @@ const login = async (loginInfo: ILoginInfo) => {
 
   // if password doesn't match, throw error
   if (!isPasswordMatched) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, "Invalid credentials!");
+    throw new ApiError(httpStatus.BAD_REQUEST, "Invalid credentials!");
   }
 
   // creating payload for token
@@ -78,6 +85,9 @@ const login = async (loginInfo: ILoginInfo) => {
   return { isPasswordMatched, accessToken, refreshToken };
 };
 
+// ======================================================================================
+// Refresh token
+// =================================================================================== //
 const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
   let verifiedToken = null;
   try {
@@ -113,8 +123,65 @@ const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
   };
 };
 
+// ======================================================================================
+// Get all users
+// =================================================================================== //
+const getAllUsers = async (): Promise<Omit<User, "password">[]> => {
+  const result = await prisma.user.findMany({
+    select: selectedFields,
+  });
+  return result;
+};
+
+// ======================================================================================
+// Get single users
+// =================================================================================== //
+const getSingleUser = async (
+  id: string
+): Promise<Omit<User, "password"> | null> => {
+  const result = await prisma.user.findFirst({
+    where: { id },
+    select: selectedFields,
+  });
+  return result;
+};
+
+// ======================================================================================
+// Update single user
+// =================================================================================== //
+const updateSingleUser = async (
+  id: string,
+  payload: Partial<Omit<User, "password">>
+): Promise<Omit<User, "password">> => {
+  const result = await prisma.user.update({
+    where: { id },
+    data: payload,
+    select: selectedFields,
+  });
+
+  return result;
+};
+
+// ======================================================================================
+// Update single user
+// =================================================================================== //
+const deleteSingleUser = async (
+  id: string
+): Promise<Omit<User, "password">> => {
+  const result = await prisma.user.delete({
+    where: { id },
+    select: selectedFields,
+  });
+
+  return result;
+};
+
 export const UserService = {
   registerUser,
   login,
   refreshToken,
+  getAllUsers,
+  getSingleUser,
+  updateSingleUser,
+  deleteSingleUser,
 };

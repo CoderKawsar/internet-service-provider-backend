@@ -10,16 +10,47 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User{
+model CoverageDistrict {
+  id           String         @id @default(uuid())
+  district     String         @unique
+  CoverageArea CoverageArea[]
+
+  @@map("coverage_districts")
+}
+
+model CoverageUpazillaOrThana {
+  id              String         @id @default(uuid())
+  upazillaOrThana String         @unique
+  CoverageArea    CoverageArea[]
+
+  @@map("coverage_upazilla_or_thanas")
+}
+
+model CoverageArea {
   id String @id @default(uuid())
-  name String
-  email String @unique
-  password String
-  role UserRoles @default(user)
-  contactNo String @unique
-  district String
-  thana String
-  address String
+
+  districtId String
+  district   CoverageDistrict @relation(fields: [districtId], references: [id])
+
+  upazillaOrThanaId String
+  upazillaOrThana   CoverageUpazillaOrThana @relation(fields: [upazillaOrThanaId], references: [id])
+
+  area String
+  User User[]
+
+  @@map("coverage_areas")
+}
+
+model User {
+  id        String    @id @default(uuid())
+  name      String
+  email     String    @unique
+  password  String
+  role      UserRoles @default(user)
+  contactNo String    @unique
+
+  addressId String
+  address   CoverageArea @relation(fields: [addressId], references: [id])
 
   @@map("users")
 }
