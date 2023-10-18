@@ -16,7 +16,12 @@ router.post(
 
 router.get("/", CoverageAreaController.getAllCoverageAreas);
 
-router.get("/:id", CoverageAreaController.getCoverageArea);
+router.get(
+  "/upazilla-or-thana/:upazillaOrThanaId",
+  CoverageAreaController.getCoverageAreaByUpazillaOrThanaId
+);
+
+router.get("/:id", CoverageAreaController.getCoverageAreaById);
 
 router.patch(
   "/:id",

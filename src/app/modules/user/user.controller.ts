@@ -4,6 +4,8 @@ import { UserService } from "./user.service";
 import sendResponse from "../../../shared/sendResponse";
 import httpStatus from "http-status";
 import config from "../../../config";
+import { ENUM_USER_ROLE } from "../../../enums/user";
+import ApiError from "../../../errors/ApiError";
 
 // ======================================================================================
 // Register user
@@ -90,7 +92,36 @@ const getSingleUser = catchAsync(
 // Update single user
 // =================================================================================== //
 const updateSingleUser = catchAsync(async (req: Request, res: Response) => {
-  const result = await UserService.updateSingleUser(req.params.id, req.body);
+  const { id } = req.params;
+  const payload = req.body;
+  const currentUser = req?.user;
+
+  // admin can not update role to super_admin
+  if (
+    currentUser?.role === ENUM_USER_ROLE.ADMIN &&
+    payload?.role === ENUM_USER_ROLE.SUPER_ADMIN
+  ) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      "You can not change your role to super admin!"
+    );
+  }
+
+  // user and customer cannot update their role
+  if (payload.role) {
+    if (
+      (currentUser?.role === ENUM_USER_ROLE.CUSTOMER ||
+        payload?.role === ENUM_USER_ROLE.USER) &&
+      currentUser?.role !== payload?.role
+    ) {
+      throw new ApiError(
+        httpStatus.BAD_REQUEST,
+        "You can not change your role!"
+      );
+    }
+  }
+
+  const result = await UserService.updateSingleUser(id, payload);
 
   sendResponse(res, {
     success: true,

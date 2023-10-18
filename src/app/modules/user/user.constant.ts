@@ -9,4 +9,6 @@ export const selectedFields = {
   district: true,
   thana: true,
   address: true,
+  createdAt: true,
+  updatedAt: true,
 };

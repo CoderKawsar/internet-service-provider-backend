@@ -23,11 +23,27 @@ export const getAllCoverageAreas = async (): Promise<CoverageArea[]> => {
   return result;
 };
 
-export const getCoverageArea = async (
+export const getCoverageAreaById = async (
   id: string
 ): Promise<CoverageArea | null> => {
   const result = await prisma.coverageArea.findFirst({
     where: { id },
+    include: {
+      upazillaOrThana: {
+        include: {
+          district: true,
+        },
+      },
+    },
+  });
+  return result;
+};
+
+export const getCoverageAreaByUpazillaOrThanaId = async (
+  upazillaOrThanaId: string
+): Promise<CoverageArea[] | null> => {
+  const result = await prisma.coverageArea.findMany({
+    where: { upazillaOrThanaId },
     include: {
       upazillaOrThana: {
         include: {
@@ -71,7 +87,8 @@ export const deleteCoverageArea = async (id: string): Promise<CoverageArea> => {
 export const CoverageAreaService = {
   addCoverageArea,
   getAllCoverageAreas,
-  getCoverageArea,
+  getCoverageAreaById,
+  getCoverageAreaByUpazillaOrThanaId,
   updateCoverageArea,
   deleteCoverageArea,
 };

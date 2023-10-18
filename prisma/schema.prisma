@@ -16,6 +16,9 @@ model CoverageDistrict {
 
   CoverageUpazillaOrThana CoverageUpazillaOrThana[]
 
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+
   @@map("coverage_districts")
 }
 
@@ -27,7 +30,10 @@ model CoverageUpazillaOrThana {
   districtId String
   district   CoverageDistrict @relation(fields: [districtId], references: [id])
 
-  CoverageArea CoverageArea[]
+  coverageArea CoverageArea[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
 
   @@map("coverage_upazilla_or_thanas")
 }
@@ -39,9 +45,59 @@ model CoverageArea {
   upazillaOrThana   CoverageUpazillaOrThana @relation(fields: [upazillaOrThanaId], references: [id])
 
   area String
-  User User[]
+
+  createdAt DateTime   @default(now())
+  updatedAt DateTime?  @updatedAt
+  Customer  Customer[]
 
   @@map("coverage_areas")
+}
+
+model StreamingService {
+  id       String  @id @default(uuid())
+  service  String
+  photoURL String?
+
+  StreamingServicesForPackage StreamingServicesForPackage[]
+
+  createdAt                    DateTime                       @default(now())
+  updatedAt                    DateTime?                      @updatedAt
+  StreamingServicesForCustomer StreamingServicesForCustomer[]
+
+  @@map("streaming_services")
+}
+
+model Package {
+  id                   String @id @default(uuid())
+  speed                Int
+  fee                  Int
+  NoOfPublicIP         Int    @default(0)
+  talkTime             Int    @default(0)
+  OTCFee               Int
+  NoOfStreamingService Int    @default(0)
+
+  StreamingServicesForPackage StreamingServicesForPackage[]
+
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  Customer  Customer[]
+
+  @@map("packages")
+}
+
+model StreamingServicesForPackage {
+  id String @id @default(uuid())
+
+  packageId String
+  package   Package @relation(fields: [packageId], references: [id])
+
+  streamingServiceId String
+  streamingService   StreamingService @relation(fields: [streamingServiceId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("streaming_service_for_packages")
 }
 
 model User {
@@ -51,11 +107,47 @@ model User {
   password  String
   role      UserRoles @default(user)
   contactNo String    @unique
+  address   String
 
-  addressId String
-  address   CoverageArea @relation(fields: [addressId], references: [id])
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  Customer  Customer[]
 
   @@map("users")
+}
+
+model Customer {
+  id String @id @default(uuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  coverageAreaId String
+  coverageArea   CoverageArea @relation(fields: [coverageAreaId], references: [id])
+
+  packageId String
+  package   Package @relation(fields: [packageId], references: [id])
+
+  createdAt                    DateTime                       @default(now())
+  updatedAt                    DateTime                       @updatedAt
+  StreamingServicesForCustomer StreamingServicesForCustomer[]
+
+  @@map("customers")
+}
+
+model StreamingServicesForCustomer {
+  id String @id @default(uuid())
+
+  streamingServiceId String
+  streamingService   StreamingService @relation(fields: [streamingServiceId], references: [id])
+
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("streaming_service_for_customers")
 }
 
 enum UserRoles {

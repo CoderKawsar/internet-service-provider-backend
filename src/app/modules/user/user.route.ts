@@ -46,7 +46,7 @@ router.get(
 // update single user
 router.patch(
   "/:id",
-  authRole(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+  authUserOrRole(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
   UserController.updateSingleUser
 );
 

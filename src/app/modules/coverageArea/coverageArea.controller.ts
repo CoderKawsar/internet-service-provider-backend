@@ -31,14 +31,29 @@ const getAllCoverageAreas = catchAsync(
   }
 );
 
-const getCoverageArea = catchAsync(
+const getCoverageAreaById = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const result = await CoverageAreaService.getCoverageArea(req.params.id);
+    const result = await CoverageAreaService.getCoverageAreaById(req.params.id);
 
     sendResponse<CoverageArea>(res, {
       success: true,
       statusCode: httpStatus.OK,
       message: "Coverage area fetched successfully!",
+      data: result,
+    });
+  }
+);
+
+const getCoverageAreaByUpazillaOrThanaId = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const result = await CoverageAreaService.getCoverageAreaByUpazillaOrThanaId(
+      req.params.upazillaOrThanaId
+    );
+
+    sendResponse<CoverageArea[]>(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Coverage area fetched of specific upazilla/thana successfully!",
       data: result,
     });
   }
@@ -76,7 +91,8 @@ const deleteCoverageArea = catchAsync(
 export const CoverageAreaController = {
   addCoverageArea,
   getAllCoverageAreas,
-  getCoverageArea,
+  getCoverageAreaById,
+  getCoverageAreaByUpazillaOrThanaId,
   updateCoverageArea,
   deleteCoverageArea,
 };

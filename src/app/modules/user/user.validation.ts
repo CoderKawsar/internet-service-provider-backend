@@ -18,14 +18,8 @@ const registerUserZodSchema = z.object({
     contactNo: z.string({
       required_error: "Contact Number is required",
     }),
-    district: z.string({
-      required_error: "District name is required!",
-    }),
-    thana: z.string({
-      required_error: "Thana name is required!",
-    }),
     address: z.string({
-      required_error: "Address name is required!",
+      required_error: "Address is required!",
     }),
   }),
 });
