@@ -6,8 +6,6 @@ export const selectedFields = {
   email: true,
   role: true,
   contactNo: true,
-  district: true,
-  thana: true,
   address: true,
   createdAt: true,
   updatedAt: true,

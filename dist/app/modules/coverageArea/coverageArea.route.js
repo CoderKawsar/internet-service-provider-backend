@@ -1,0 +1,20 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.CoverageAreaRoutes = void 0;
+const express_1 = require("express");
+const authRole_1 = __importDefault(require("../../middlewares/authRole"));
+const user_1 = require("../../../enums/user");
+const coverageArea_controller_1 = require("./coverageArea.controller");
+const validateRequest_1 = __importDefault(require("../../middlewares/validateRequest"));
+const coverageArea_validation_1 = require("./coverageArea.validation");
+const router = (0, express_1.Router)();
+router.post("/", (0, authRole_1.default)(user_1.ENUM_USER_ROLE.SUPER_ADMIN, user_1.ENUM_USER_ROLE.ADMIN), (0, validateRequest_1.default)(coverageArea_validation_1.CoverageAreaValidation.AddCoverageAreaZodSchema), coverageArea_controller_1.CoverageAreaController.addCoverageArea);
+router.get("/", coverageArea_controller_1.CoverageAreaController.getAllCoverageAreas);
+router.get("/upazilla-or-thana/:upazillaOrThanaId", coverageArea_controller_1.CoverageAreaController.getCoverageAreaByUpazillaOrThanaId);
+router.get("/:id", coverageArea_controller_1.CoverageAreaController.getCoverageAreaById);
+router.patch("/:id", (0, authRole_1.default)(user_1.ENUM_USER_ROLE.SUPER_ADMIN, user_1.ENUM_USER_ROLE.ADMIN), (0, validateRequest_1.default)(coverageArea_validation_1.CoverageAreaValidation.UpdateCoverageAreaZodSchema), coverageArea_controller_1.CoverageAreaController.updateCoverageArea);
+router.delete("/:id", (0, authRole_1.default)(user_1.ENUM_USER_ROLE.SUPER_ADMIN, user_1.ENUM_USER_ROLE.ADMIN), coverageArea_controller_1.CoverageAreaController.deleteCoverageArea);
+exports.CoverageAreaRoutes = router;

@@ -6,6 +6,7 @@ import { CoverageAreaRoutes } from "../modules/coverageArea/coverageArea.route";
 import { StreamingServiceRoutes } from "../modules/streamingService/streamingService.route";
 import { PackageRoutes } from "../modules/packages/package.route";
 import { CustomerRoutes } from "../modules/customer/customer.route";
+import { StreamingServicesForPackageRoutes } from "../modules/streamingServicesForPackage/streamingServicesForPackage.route";
 
 const router = Router();
 
@@ -29,6 +30,10 @@ const moduleRoutes = [
   {
     path: "/packages",
     route: PackageRoutes,
+  },
+  {
+    path: "/streaming-services-for-package",
+    route: StreamingServicesForPackageRoutes,
   },
   {
     path: "/users",

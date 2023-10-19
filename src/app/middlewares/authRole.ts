@@ -4,6 +4,7 @@ import { Secret } from "jsonwebtoken";
 import config from "../../config";
 import ApiError from "../../errors/ApiError";
 import { jwtHelpers } from "../../helpers/jwtHelpers";
+import prisma from "../../shared/prisma";
 
 const authRole =
   (...requiredRoles: string[]) =>
@@ -19,7 +20,18 @@ const authRole =
 
       verifiedUser = jwtHelpers.verifyToken(token, config.jwt.secret as Secret);
 
-      req.user = verifiedUser; // role  , userid
+      const isUserExist = await prisma.user.findFirst({
+        where: {
+          id: verifiedUser?.id,
+        },
+      });
+
+      if (isUserExist) {
+        req.user = verifiedUser; // role  , userid
+      } else {
+        req.user = null;
+        throw new ApiError(httpStatus.BAD_REQUEST, "User not found!");
+      }
 
       // guard that specific role
       if (requiredRoles.length && !requiredRoles.includes(verifiedUser.role)) {

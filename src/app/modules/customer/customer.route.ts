@@ -21,6 +21,12 @@ router.get(
 );
 
 router.get(
+  "/user/:userId",
+  authUserOrRole(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+  CustomerController.getCustomerByUserId
+);
+
+router.get(
   "/:id",
   authUserOrRole(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
   CustomerController.getCustomerById

@@ -4,6 +4,9 @@ import { PackageService } from "./package.service";
 import sendResponse from "../../../shared/sendResponse";
 import { Package } from "@prisma/client";
 import httpStatus from "http-status";
+import pick from "../../../shared/pick";
+import { packageFilterableFields } from "./package.constants";
+import { paginationFields } from "../../../constants/pagination";
 
 const addPackage = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -20,13 +23,20 @@ const addPackage = catchAsync(
 
 const getAllPackages = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const result = await PackageService.getAllPackages();
+    const filters = pick(req.query, packageFilterableFields);
+    const paginationOptions = pick(req.query, paginationFields);
 
-    sendResponse<Package[]>(res, {
+    const result = await PackageService.getAllPackages(
+      filters,
+      paginationOptions
+    );
+
+    sendResponse(res, {
       success: true,
       statusCode: httpStatus.OK,
       message: "All Packages fetched successfully!",
-      data: result,
+      meta: result.meta,
+      data: result.data,
     });
   }
 );
