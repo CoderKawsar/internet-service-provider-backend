@@ -5,6 +5,7 @@ import httpStatus from "http-status";
 import globalErrorHandler from "./app/middlewares/globalErrorHandler";
 import routes from "./app/routes";
 import config from "./config";
+import rateLimit from "express-rate-limit";
 
 const app: Application = express();
 
@@ -20,6 +21,16 @@ app.use(cookieParser());
 // parser middlewires
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// limit request limit on refresh token route
+app.use(
+  "/api/v1/users/refresh-token",
+  rateLimit({
+    windowMs: 60 * 1000, // 1 minute
+    max: 5, // limit each IP to 5 requests per minute
+    message: "Too many requests, please try again later",
+  })
+);
 
 // use route
 app.use("/api/v1", routes);

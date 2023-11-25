@@ -7,6 +7,7 @@ import { StreamingServiceRoutes } from "../modules/streamingService/streamingSer
 import { PackageRoutes } from "../modules/packages/package.route";
 import { CustomerRoutes } from "../modules/customer/customer.route";
 import { StreamingServicesForPackageRoutes } from "../modules/streamingServicesForPackage/streamingServicesForPackage.route";
+import { testRoutes } from "../modules/testModule/testModule";
 
 const router = Router();
 
@@ -42,6 +43,10 @@ const moduleRoutes = [
   {
     path: "/customers",
     route: CustomerRoutes,
+  },
+  {
+    path: "/tests",
+    route: testRoutes,
   },
 ];
 

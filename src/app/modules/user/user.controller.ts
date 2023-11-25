@@ -30,6 +30,7 @@ const login = catchAsync(async (req: Request, res: Response) => {
   const cookieOptions = {
     secure: config.env === "production",
     httpOnly: true,
+    expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
   };
 
   res.cookie("refreshToken", result.refreshToken, cookieOptions);
@@ -47,6 +48,10 @@ const login = catchAsync(async (req: Request, res: Response) => {
 // =================================================================================== //
 const refreshToken = catchAsync(async (req: Request, res: Response) => {
   const { refreshToken } = req.cookies;
+
+  if (!refreshToken) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Cookie not found!");
+  }
 
   const result = await UserService.refreshToken(refreshToken);
 
@@ -145,6 +150,20 @@ const deleteSingleUser = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// ======================================================================================
+// Send Feedback from user via email(nodemailer)
+// =================================================================================== //
+const sendFeedback = catchAsync(async (req: Request, res: Response) => {
+  const payload = req.body;
+  await UserService.sendFeedback(payload);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Feedback sent successfully!",
+  });
+});
+
 export const UserController = {
   registerUser,
   login,
@@ -153,4 +172,5 @@ export const UserController = {
   getSingleUser,
   updateSingleUser,
   deleteSingleUser,
+  sendFeedback,
 };

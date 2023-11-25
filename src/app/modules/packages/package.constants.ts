@@ -7,4 +7,4 @@ export const packageFilterableFields: string[] = [
   "NoOfStreamingService",
 ];
 
-export const packageSearchableFields: string[] = ["speed", "fee", "OTCFee"];
+export const packageSearchableFields: string[] = ["speed"];

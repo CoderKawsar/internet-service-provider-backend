@@ -8,7 +8,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  // directUrl = env("DIRECT_URL")
 }
 
 model CoverageDistrict {
@@ -120,19 +120,22 @@ model User {
 model Customer {
   id String @id @default(uuid())
 
-  userId String
+  customerId String @unique
+
+  userId String 
   user   User   @relation(fields: [userId], references: [id])
 
   coverageAreaId String
   coverageArea   CoverageArea @relation(fields: [coverageAreaId], references: [id])
 
-  packageId String
+  packageId String 
   package   Package @relation(fields: [packageId], references: [id])
 
   createdAt                    DateTime                       @default(now())
   updatedAt                    DateTime                       @updatedAt
   StreamingServicesForCustomer StreamingServicesForCustomer[]
 
+  @@unique([userId, coverageAreaId, packageId])
   @@map("customers")
 }
 
@@ -149,6 +152,19 @@ model StreamingServicesForCustomer {
   updatedAt DateTime @updatedAt
 
   @@map("streaming_service_for_customers")
+}
+
+
+model Test{
+  id String @id @default(uuid())
+
+  testStr String
+  testNum Float
+   
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+
+  @@map("tests")
 }
 
 enum UserRoles {

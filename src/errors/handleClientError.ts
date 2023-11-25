@@ -7,7 +7,21 @@ const handleClientError = (error: Prisma.PrismaClientKnownRequestError) => {
   let message = "";
   const statusCode = 400;
 
-  if (error.code === "P2025") {
+  if (error.code === "P2002") {
+    const uniqueVoilatedFields = error.meta?.target;
+    if (!!uniqueVoilatedFields) {
+      // @ts-ignore
+      message = uniqueVoilatedFields[0] + " already exists!";
+    } else {
+      message = "Unique field required!";
+    }
+    errors = [
+      {
+        path: "",
+        message,
+      },
+    ];
+  } else if (error.code === "P2025") {
     message = (error.meta?.cause as string) || "Record not found!";
     errors = [
       {
@@ -30,7 +44,7 @@ const handleClientError = (error: Prisma.PrismaClientKnownRequestError) => {
 
   return {
     statusCode,
-    message: error.message,
+    message: message,
     errorMessages: errors,
   };
 };

@@ -2,8 +2,13 @@ import { User } from "@prisma/client";
 import prisma from "../../../shared/prisma";
 import config from "../../../config";
 import bcrypt from "bcrypt";
+import nodemailer from "nodemailer";
 import { Secret } from "jsonwebtoken";
-import { ILoginInfo, IRefreshTokenResponse } from "./user.interface";
+import {
+  IFeedBackPayload,
+  ILoginInfo,
+  IRefreshTokenResponse,
+} from "./user.interface";
 import ApiError from "../../../errors/ApiError";
 import httpStatus from "http-status";
 import { jwtHelpers } from "../../../helpers/jwtHelpers";
@@ -176,6 +181,31 @@ const deleteSingleUser = async (
   return result;
 };
 
+// ======================================================================================
+// Send feedback from user via email(nodemailer)
+// =================================================================================== //
+const sendFeedback = async (payload: IFeedBackPayload) => {
+  const { name, email, message } = payload;
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: config.nodemailer.email,
+      pass: config.nodemailer.email_password,
+    },
+  });
+
+  // Email content
+  const mailOptions = {
+    from: email,
+    to: config.nodemailer.email,
+    subject: `Email from Name: ${name}, Email: ${email} via ISP website`,
+    text: message,
+  };
+
+  // Return a promise for async operations
+  return transporter.sendMail(mailOptions);
+};
+
 export const UserService = {
   registerUser,
   login,
@@ -184,4 +214,5 @@ export const UserService = {
   getSingleUser,
   updateSingleUser,
   deleteSingleUser,
+  sendFeedback,
 };

@@ -51,10 +51,13 @@ router.patch(
 );
 
 // delete single user
-router.patch(
+router.delete(
   "/:id",
   authRole(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
   UserController.deleteSingleUser
 );
+
+// send feedback form user via email(nodemailer)
+router.post("/send-feedback", UserController.sendFeedback);
 
 export const UserRoutes = router;

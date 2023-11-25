@@ -7,10 +7,13 @@ import httpStatus from "http-status";
 import { customerFilterableFields } from "./customer.constants";
 import pick from "../../../shared/pick";
 import { paginationFields } from "../../../constants/pagination";
+import { generateCustomerId } from "../../../helpers/common";
 
 const addCustomer = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const result = await CustomerService.addCustomer(req.body);
+    const payload = req.body;
+    payload.customerId = await generateCustomerId(payload.coverageAreaId);
+    const result = await CustomerService.addCustomer(payload);
 
     sendResponse<Customer>(res, {
       success: true,
